@@ -62,10 +62,14 @@ app.get("/api/flavors/:id", async (req, res, next) => {
 });
 app.post("/api/flavors", async (req, res, next) => {
   try {
+    // let ultimate_favorite = !!req.body.ultimate_favorite;
+
+    let ultimate_favorite = req.body.ultimate_favorite === true ? true : false;
+
     let SQL = `
-            INSERT INTO theodore_sinclair_s_favorite_ice_cream_flavors (name) VALUES ($1) RETURNING *;
+            INSERT INTO theodore_sinclair_s_favorite_ice_cream_flavors (name, ultimate_favorite) VALUES ($1, $2) RETURNING *;
         `;
-    let response = await client.query(SQL, [req.body.name]);
+    let response = await client.query(SQL, [req.body.name, ultimate_favorite]);
     res.send(response.rows[0]);
   } catch (error) {
     next(error);
